@@ -11,9 +11,9 @@ def exitfunc(): #runs when sys.exit() is called
 
 sys.exitfunc = exitfunc
 
-usersetx = 10
-usersety = 50
-usersetz = 50
+usersetx = 64
+usersety = 64
+usersetz = 64
 
 spacer = 5
 
@@ -24,11 +24,12 @@ maxextent =  0.5
 
 windowtitle = "GLUT Window"
 
-#pointstyle = "single point per voxel"
+pointstyle = "single point per voxel"
 #pointstyle = "six points per voxel"
+#pointstyle = "27 points per voxel" 
 #pointstyle = "36 points per voxel"
 #pointstyle = "36 points per voxel + six"
-pointstyle = "189 points per voxel"
+#pointstyle = "189 points per voxel"
 #pointstyle = "729 points per voxel"
 #pointstyle = "19683 points per voxel"
 #pointstyle = "531441 points per voxel"
@@ -36,6 +37,7 @@ pointstyle = "189 points per voxel"
 global rendertype
 rendertype = "points"
 #rendertype = "lines"
+#rendertype = "line_strip"
 
 num_points = usersetx * usersety * usersetz
 
@@ -43,6 +45,8 @@ if pointstyle == "single point per voxel":
 	num_points = num_points
 elif pointstyle == "six points per voxel":
 	num_points *= 6
+elif pointstyle == "27 points per voxel":
+	num_points *= 27
 elif pointstyle == "36 points per voxel":
 	num_points *= 36
 elif pointstyle == "36 points per voxel + six":
@@ -79,6 +83,8 @@ def display():
 		GL.glDrawArrays(GL.GL_LINE_LOOP,0,len(data))
 	elif rendertype == "triangles":
 		GL.glDrawArrays(GL.GL_TRIANGLES,0,len(data))
+	elif rendertype == "line_strip":
+		GL.glDrawArrays(GL.GL_LINE_STRIP,0,len(data))
 	glut.glutSwapBuffers()
 
 
@@ -261,6 +267,8 @@ for x in range(0,usersetx):
 	for y in range(0,usersety):
 		for z in range(0,usersetz):
 
+			#colors
+
 			col = (0.5,0.5,0.5,1.0)
 
 			cur_x = x_values[x]
@@ -327,7 +335,33 @@ for x in range(0,usersetx):
 				if (cur_x == x_min and cur_y == y_min) or (cur_y == y_min and cur_z == z_min) or (cur_x == x_min and cur_z == z_min) or (cur_x == x_max and cur_y == y_max) or (cur_y == y_max and cur_z == z_max) or (cur_x == x_max and cur_z == z_max) or (cur_x == x_min and cur_z == z_max) or (cur_x == x_min and cur_y == y_max) or (cur_y == y_max and cur_z == z_min) or (cur_y == y_min and cur_z == z_max) or (cur_x == x_max and cur_z == z_min) or (cur_x == x_max and cur_y == y_min):
 					col = (1.0,1.0,1.0,1.0) # edge color
 
-			colorcount = 0
+			num = 1
+
+			if pointstyle == "single point per voxel":
+				num = num
+			elif pointstyle == "six points per voxel":
+				num *= 6
+			elif pointstyle == "27 points per voxel":
+				num *= 27
+			elif pointstyle == "36 points per voxel":
+				num *= 36
+			elif pointstyle == "36 points per voxel + six":
+				num *= (36+6)
+			elif pointstyle == "189 points per voxel":
+				num *= 189
+			elif pointstyle == "729 points per voxel":
+				num *= 729
+			elif pointstyle == "19683 points per voxel":
+				num *= 19683
+			elif pointstyle == "531441 points per voxel":
+				num *= 531441
+			else:
+				print pointstyle
+
+			for i in range(0,num):
+				colors.append((col))
+
+			#now points
 			if pointstyle == "531441 points per voxel":
 				xoffset = 0
 				x2offset = 0
@@ -392,8 +426,9 @@ for x in range(0,usersetx):
 															for t in range(-1,2):
 																z4offset = t*z4spacer
 
-																points.append((x_values[x]+xoffset+x2offset+x3offset+x4offset,y_values[y]+yoffset+y2offset+y3offset+y4offset,z_values[z]+zoffset+z2offset+z3offset+z4offset))
-																colorcount += 1
+																points.append(((x_values[x]+xoffset+x2offset+x3offset+x4offset),(y_values[y]+yoffset+y2offset+y3offset+y4offset),(z_values[z]+zoffset+z2offset+z3offset+z4offset)))
+										print(str(x)+"/"+str(usersetx)+" "+str(y)+"/"+str(usersety)+" "+str(z)+"/"+str(usersetz)+"   "+str(i)+" "+str(j)+" "+str(k)+" "+str(l)+" "+str(m)+" "+str(n))
+			
 			elif pointstyle == "19683 points per voxel":
 				xoffset = 0
 				x2offset = 0
@@ -444,8 +479,7 @@ for x in range(0,usersetx):
 													z3offset = q*z3spacer
 
 													points.append((x_values[x]+xoffset+x2offset+x3offset,y_values[y]+yoffset+y2offset+y3offset,z_values[z]+zoffset+z2offset+z3offset))
-													colorcount += 1
-
+										print(str(x)+" "+str(y)+" "+str(z)+"   "+str(i)+" "+str(j)+" "+str(k)+" "+str(l)+" "+str(m)+" "+str(n))
 
 			elif pointstyle == "729 points per voxel":
 				xoffset = 0
@@ -482,7 +516,7 @@ for x in range(0,usersetx):
 										z2offset = n*z2spacer
 
 										points.append((x_values[x]+xoffset+x2offset,y_values[y]+yoffset+y2offset,z_values[z]+zoffset+z2offset))
-										colorcount += 1
+										print(str(x)+" "+str(y)+" "+str(z)+"   "+str(i)+" "+str(j)+" "+str(k)+" "+str(l)+" "+str(m)+" "+str(n))
 
 			elif pointstyle == "189 points per voxel":
 				xoffset = 0
@@ -506,10 +540,7 @@ for x in range(0,usersetx):
 							points.append((x_values[x]+xoffset,y_values[y]+yoffset,(z_values[z]+(z_step/(spacer**2)))+zoffset))
 							points.append((x_values[x]+xoffset,y_values[y]+yoffset,(z_values[z]-(z_step/(spacer**2)))+zoffset))
 
-							colorcount += 7
-
-
-			elif pointstyle == "36 points per voxel" or "36 points per voxel + six":
+			elif pointstyle == "36 points per voxel" or  pointstyle == "36 points per voxel + six":
 				#looking back, the code got shorter as I covered more points
 
 				points.append(((x_values[x]+(x_step/spacer))+(x_step/(spacer**2)),y_values[y],z_values[z]))
@@ -518,8 +549,6 @@ for x in range(0,usersetx):
 				points.append(((x_values[x]+(x_step/spacer)),y_values[y]-(y_step/(spacer**2)),z_values[z]))
 				points.append(((x_values[x]+(x_step/spacer)),y_values[y],z_values[z]+(z_step/(spacer**2))))
 				points.append(((x_values[x]+(x_step/spacer)),y_values[y],z_values[z]-(z_step/(spacer**2))))
-				colorcount += 6
-
 
 				points.append(((x_values[x]-(x_step/spacer))+(x_step/(spacer**2)),y_values[y],z_values[z]))
 				points.append(((x_values[x]-(x_step/spacer))-(x_step/(spacer**2)),y_values[y],z_values[z]))
@@ -527,7 +556,6 @@ for x in range(0,usersetx):
 				points.append(((x_values[x]-(x_step/spacer)),y_values[y]-(y_step/(spacer**2)),z_values[z]))
 				points.append(((x_values[x]-(x_step/spacer)),y_values[y],z_values[z]+(z_step/(spacer**2))))
 				points.append(((x_values[x]-(x_step/spacer)),y_values[y],z_values[z]-(z_step/(spacer**2))))
-				colorcount += 6
 
 				points.append((x_values[x]+(x_step/(spacer**2)),(y_values[y]+(y_step/spacer)),z_values[z]))
 				points.append((x_values[x]-(x_step/(spacer**2)),(y_values[y]+(y_step/spacer)),z_values[z]))
@@ -535,7 +563,6 @@ for x in range(0,usersetx):
 				points.append((x_values[x],(y_values[y]+(y_step/spacer))-(y_step/(spacer**2)),z_values[z]))
 				points.append((x_values[x],(y_values[y]+(y_step/spacer)),z_values[z]+(z_step/(spacer**2))))
 				points.append((x_values[x],(y_values[y]+(y_step/spacer)),z_values[z]-(z_step/(spacer**2))))
-				colorcount += 6
 
 				points.append((x_values[x]+(x_step/(spacer**2)),(y_values[y]-(y_step/spacer)),z_values[z]))
 				points.append((x_values[x]-(x_step/(spacer**2)),(y_values[y]-(y_step/spacer)),z_values[z]))
@@ -543,7 +570,6 @@ for x in range(0,usersetx):
 				points.append((x_values[x],(y_values[y]-(y_step/spacer))-(y_step/(spacer**2)),z_values[z]))
 				points.append((x_values[x],(y_values[y]-(y_step/spacer)),z_values[z]+(z_step/(spacer**2))))
 				points.append((x_values[x],(y_values[y]-(y_step/spacer)),z_values[z]-(z_step/(spacer**2))))
-				colorcount += 6
 
 				points.append((x_values[x]+(x_step/(spacer**2)),y_values[y],(z_values[z]+(z_step/spacer))))
 				points.append((x_values[x]-(x_step/(spacer**2)),y_values[y],(z_values[z]+(z_step/spacer))))
@@ -551,7 +577,6 @@ for x in range(0,usersetx):
 				points.append((x_values[x],y_values[y]-(y_step/(spacer**2)),(z_values[z]+(z_step/spacer))))
 				points.append((x_values[x],y_values[y],(z_values[z]+(z_step/spacer))+(z_step/(spacer**2))))
 				points.append((x_values[x],y_values[y],(z_values[z]+(z_step/spacer))-(z_step/(spacer**2))))
-				colorcount += 6
 
 				points.append((x_values[x]+(x_step/(spacer**2)),y_values[y],(z_values[z]-(z_step/spacer))))
 				points.append((x_values[x]-(x_step/(spacer**2)),y_values[y],(z_values[z]-(z_step/spacer))))
@@ -559,7 +584,6 @@ for x in range(0,usersetx):
 				points.append((x_values[x],y_values[y]-(y_step/(spacer**2)),(z_values[z]-(z_step/spacer))))
 				points.append((x_values[x],y_values[y],(z_values[z]-(z_step/spacer))+(z_step/(spacer**2))))
 				points.append((x_values[x],y_values[y],(z_values[z]-(z_step/spacer))-(z_step/(spacer**2))))
-				colorcount += 6
 
 				if pointstyle == "36 points per voxel + six":
 					points.append((x_values[x]+(x_step/spacer),y_values[y],z_values[z]))
@@ -568,7 +592,22 @@ for x in range(0,usersetx):
 					points.append((x_values[x],y_values[y]-(y_step/spacer),z_values[z]))
 					points.append((x_values[x],y_values[y],z_values[z]+(z_step/spacer)))
 					points.append((x_values[x],y_values[y],z_values[z]-(z_step/spacer)))
-					colorcount += 6
+
+			elif pointstyle == "27 points per voxel":
+				xoffset = 0
+				yoffset = 0
+				zoffset = 0
+
+				for i in range(-1,2):
+					xoffset = i*(x_step/spacer)
+
+					for j in range(-1,2):
+						yoffset = j*(y_step/spacer)
+
+						for k in range(-1,2):
+							zoffset = k*(z_step/spacer)
+
+							points.append((x_values[x]+xoffset,y_values[y]+yoffset,z_values[z]+zoffset))
 
 			elif pointstyle == "six points per voxel":
 
@@ -578,18 +617,13 @@ for x in range(0,usersetx):
 				points.append((x_values[x],y_values[y]-(y_step/spacer),z_values[z]))
 				points.append((x_values[x],y_values[y],z_values[z]+(z_step/spacer)))
 				points.append((x_values[x],y_values[y],z_values[z]-(z_step/spacer)))
-				colorcount += 6
 
 			elif pointstyle == "single point per voxel":
 
 				points.append((x_values[x],y_values[y],z_values[z]))
-				colorcount+=1
 
-			for i in range(0,colorcount):
-				colors.append(col)
-				#colors.append((random.random(),random.random(),random.random(),1))
-
-	print("loading -- "+str(x)+"/"+str(usersetx)+"  "+str(100*x/usersetx)+" percent completed after "+str(time.time()-t0)+" seconds")
+	print("loading -- "+str(x+1)+"/"+str(usersetx)+"  "+str(100*(x+1)/usersetx)+" percent completed after "+str(time.time()-t0)+" seconds")
+	#print(str(len(points))+"<points colors>"+str(len(colors)))
 print("completed "+str(usersetx)+"/"+str(usersetx)+" after "+str(time.time()-t0)+" seconds")
 
 
@@ -664,8 +698,8 @@ fragmentShaderProgram = """
 	varying vec4 v_color;
 	varying vec3 v_pos;
 	void main() {
-		//gl_FragColor = vec4(clamp((v_color.x-v_pos.x),0.0,1.0),clamp((v_color.y-v_pos.y),0.0,1.0),clamp((v_color.z-v_pos.z),0.0,1.0),v_color.w);
-		gl_FragColor = v_color;
+		gl_FragColor = vec4(clamp((v_color.x-v_pos.x),0.0,1.0),clamp((v_color.y-v_pos.y),0.0,1.0),clamp((v_color.z-v_pos.z),0.0,1.0),v_color.w);
+		//gl_FragColor = v_color;
 	}"""
 fragmentShader = GL.glCreateShader(GL.GL_FRAGMENT_SHADER)
 GL.glShaderSource(fragmentShader, fragmentShaderProgram)
