@@ -15,6 +15,9 @@ This code sets up the most basic of the essential glut callbacks and starts glut
 to add what - points, animation, colors - this makes a really nice template for any project that 
 needs to have some objects displayed on the screen with minimal work.
 
+The user can choose whether to use glutTimerFunc (will run after /at least/ the amount of time you specify) or 
+glutIdleFunc (will run whenever glut is not busy - runs faster on faster machines) to change things over time.
+
 '''
 
 windowtitle = "GLUT Display"
@@ -50,12 +53,17 @@ def reshape(width,height):
 	GL.glViewport(0, 0, width, height)
 	GL.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glut.glutPostRedisplay()
-
+'''
 def timer(fps):
 
 	#ANY ANIMATION GOES HERE
 
 	glut.glutTimerFunc(1000/fps, timer, fps)
+'''
+
+def idle():
+	pass
+
 
 glut.glutInit()
 glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA | glut.GLUT_DEPTH | glut.GLUT_MULTISAMPLE)
@@ -70,7 +78,8 @@ glut.glutReshapeWindow(windowxdim,windowydim)
 glut.glutReshapeFunc(reshape)
 glut.glutDisplayFunc(display)
 glut.glutKeyboardFunc(keyboard)
-glut.glutTimerFunc(1000/60, timer, 60)
+#glut.glutTimerFunc(1000/60, timer, 60)
+glut.glutIdleFunc(idle)
 #glut.glutFullScreen() #does work -- 3/23
 
 '''

@@ -1,5 +1,5 @@
 from buffobj import *
-
+from pointgenerator import *
 
 windowtitle = "GLUT Display"
 windowxdim = 800
@@ -12,10 +12,11 @@ def exitfunc(): #runs when sys.exit() is called
 sys.exitfunc = exitfunc
 
 def display():
+	global d
 
 	GL.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-	#DRAW CALLS HERE
+	d.draw()
 
 	glut.glutSwapBuffers()
 	glut.glutPostRedisplay()
@@ -41,6 +42,7 @@ def timer(fps):
 
 	glut.glutTimerFunc(1000/fps, timer, fps)
 
+
 glut.glutInit()
 glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA | glut.GLUT_DEPTH | glut.GLUT_MULTISAMPLE)
 
@@ -57,8 +59,11 @@ glut.glutKeyboardFunc(keyboard)
 glut.glutTimerFunc(1000/60, timer, 60)
 #glut.glutFullScreen() #does work -- 3/23
 
-#POINTS
+#generate points and declare buffers
+p = pointgenerator()
+p.gen_sphere(0.5,4)
 
-#BUFFERS
+global d
+d = buffobj(p.num_points,p.points,p.colors)
 
 glut.glutMainLoop()

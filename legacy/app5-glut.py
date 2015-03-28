@@ -221,15 +221,15 @@ for x in range(0,usersetx3):
 
 #===================================================================================================================
 
-d = buffobj(points1,colors1,num_points1)
+d = buffobj(num_points1,points1,colors1,None)
 d.set_translate(0.5,0.5,0.0)
 d.update()
 
-e = buffobj(points2,colors2,num_points2)
+e = buffobj(num_points2,points2,colors2,None)
 e.set_translate(-0.5,-0.5,0.0)
 e.rendertype = "lines"
 e.update()
 
-f = buffobj(points3,colors3,num_points3)
+f = buffobj(num_points3,points3,colors3,None)
 
-glut.glutMainLoop()
+glut.glutMainLoop(),num_points3,
