@@ -74,6 +74,7 @@ class buffobj:
 		#DECLARE GPU BUFFER
 
 		self.gpubuffer = GL.glGenBuffers(1)
+		print self.gpubuffer
 
 		vertexShader = GL.glCreateShader(GL.GL_VERTEX_SHADER)
 		GL.glShaderSource(vertexShader, vertexShaderProgram)
@@ -160,6 +161,16 @@ class buffobj:
 		GL.glUniform1f(self.yrotateloc,self.yrotate)
 		GL.glUniform1f(self.zrotateloc,self.zrotate)
 		GL.glUniform1f(self.scaleloc,self.scale)
+
+
+	def kill(self):
+		GL.glDisableVertexAttribArray(self.colorloc)
+		GL.glDisableVertexAttribArray(self.positionloc)
+		GL.glDeleteProgram(self.shaderProgram)
+		GL.glDeleteShader(self.fragmentShader)
+		GL.glDeleteShader(self.vertexShader)
+		GL.glDeleteBuffers(1,[gpubuffer])
+		GL.glDeleteVertexArrays(1,[gpubuffer])
 
 
 	def set_rendertype(self,rendertype):

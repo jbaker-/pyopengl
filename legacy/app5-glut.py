@@ -60,6 +60,7 @@ def keyboard(key, x, y):
 	global escale
 	global fscale
 
+
 	if key == '\033':
 		sys.exit( )
 	elif key == 'r': # rotate
@@ -128,7 +129,6 @@ GL.glEnable(GL.GL_DEPTH_TEST)
 GL.glEnable(GL.GL_BLEND)
 GL.glBlendFunc(GL.GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 GL.glClearColor(0.0,0.0,0.0,1.0)
-GL.glPointSize(5.0)
 
 glut.glutCreateWindow(windowtitle)
 glut.glutReshapeWindow(800,800)
