@@ -12,25 +12,58 @@ def display():
 	glut.glutSwapBuffers()
 	glut.glutPostRedisplay()
 
-global xrotate
-global yrotate
-global zrotate
-xrotate = 0.0
-yrotate = 0.0
-zrotate = 0.0
+global dxrotate
+global dyrotate
+global dzrotate
+dxrotate = 0.0
+dyrotate = 0.0
+dzrotate = 0.0
+
+global exrotate
+global eyrotate
+global ezrotate
+exrotate = 0.0
+eyrotate = 0.0
+ezrotate = 0.0
+
+global fxrotate
+global fyrotate
+global fzrotate
+fxrotate = 0.0
+fyrotate = 0.0
+fzrotate = 0.0
 
 def keyboard(key, x, y):
-	global xrotate
-	global yrotate
-	global zrotate
+	global dxrotate
+	global dyrotate
+	global dzrotate
+	global exrotate
+	global eyrotate
+	global ezrotate
+	global fxrotate
+	global fyrotate
+	global fzrotate
+
 	if key == '\033':
 		sys.exit( )
 	elif key == 'r': # rotate
-		xrotate += 0.1
+		dxrotate += 0.1
 	elif key == 'f':
-		yrotate += 0.1
+		dyrotate += 0.1
 	elif key == 'v':
-		zrotate += 0.1
+		dzrotate += 0.1
+	elif key == 't':
+		exrotate += 0.1
+	elif key == 'g':
+		eyrotate += 0.1
+	elif key == 'b':
+		ezrotate += 0.1
+	elif key == 'y':
+		fxrotate += 0.1
+	elif key == 'h':
+		fyrotate += 0.1
+	elif key == 'n':
+		fzrotate += 0.1
 
 
 	glut.glutPostRedisplay()
@@ -41,11 +74,25 @@ def reshape(width,height):
 	glut.glutPostRedisplay()
 
 def timer(fps):
-	global xrotate
-	global yrotate
-	global zrotate
-	d.set_rotate(xrotate,yrotate,zrotate)
+	global dxrotate
+	global dyrotate
+	global dzrotate
+	global exrotate
+	global eyrotate
+	global ezrotate
+	global fxrotate
+	global fyrotate
+	global fzrotate
+
+	d.set_rotate(dxrotate,dyrotate,dzrotate)
 	d.update()
+
+	e.set_rotate(exrotate,eyrotate,ezrotate)
+	e.update()
+
+	f.set_rotate(fxrotate,fyrotate,fzrotate)
+	f.update()
+
 	glut.glutTimerFunc(1000/fps, timer, fps)
 
 
@@ -98,12 +145,13 @@ for x in range(0,usersetx):
 			colors.append((0.5,0.5,0.5,1.0))
 
 d = buffobj(points,colors,num_points)
-d.set_rotate(0.1,0.4,1.0)
-d.set_translate(0.1,0.4,-0.5)
+d.set_translate(0.5,0.5,0.0)
 d.update()
+
 e = buffobj(points,colors,num_points)
-e.set_rotate(-0.1,-0.4,-1.0)
-e.set_translate(-0.1,-0.4,0.5)
+e.set_translate(-0.5,-0.5,0.0)
+e.update()
+
 f = buffobj(points,colors,num_points)
 
 glut.glutMainLoop()

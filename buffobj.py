@@ -103,19 +103,19 @@ class buffobj:
 		GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
 		GL.glBufferData(GL.GL_ARRAY_BUFFER,self.data.nbytes,self.data,GL.GL_DYNAMIC_DRAW)
 
-		stride = self.data.strides[0]
+		self.stride = self.data.strides[0]
 
 		self.posoffset = ctypes.c_void_p(0)
-		loc = GL.glGetAttribLocation(self.shaderProgram,"a_position")
-		GL.glEnableVertexAttribArray(loc)
-		GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
-		GL.glVertexAttribPointer(loc, 3, GL.GL_FLOAT, False, stride, self.posoffset)
+		self.positionloc = GL.glGetAttribLocation(self.shaderProgram,"a_position")
+		GL.glEnableVertexAttribArray(self.positionloc)
+		#GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
+		GL.glVertexAttribPointer(self.positionloc, 3, GL.GL_FLOAT, False, self.stride, self.posoffset)
 
 		self.coloffset = ctypes.c_void_p(self.data.dtype["a_position"].itemsize)
-		loc = GL.glGetAttribLocation(self.shaderProgram,"a_color")
-		GL.glEnableVertexAttribArray(loc)
-		GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
-		GL.glVertexAttribPointer(loc,4,GL.GL_FLOAT, False, stride, self.coloffset)
+		self.colorloc = GL.glGetAttribLocation(self.shaderProgram,"a_color")
+		GL.glEnableVertexAttribArray(self.colorloc)
+		#GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
+		GL.glVertexAttribPointer(self.colorloc,4,GL.GL_FLOAT, False, self.stride, self.coloffset)
 
 		#UNIFORM VARIABLES
 
@@ -130,7 +130,19 @@ class buffobj:
 		self.update()
 
 	def draw(self):
+
+		'''
+		GL.glEnableVertexAttribArray(self.colorloc)
+		GL.glEnableVertexAttribArray(self.positionloc)
+		GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
+		GL.glVertexAttribPointer(self.colorloc,4,GL.GL_FLOAT, False, self.stride, self.coloffset)
+		GL.glVertexAttribPointer(self.positionloc, 3, GL.GL_FLOAT, False, self.stride, self.posoffset)
+		''' # I have no idea, it seems like 
+
+		self.update()
+
 		GL.glUseProgram(self.shaderProgram)
+
 		if self.rendertype == "points":
 			GL.glDrawArrays(GL.GL_POINTS, 0, len(self.data))
 		elif self.rendertype == "lines":
