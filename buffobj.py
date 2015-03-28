@@ -91,8 +91,8 @@ class buffobj:
 		GL.glValidateProgram(self.shaderProgram)
 		GL.glUseProgram(self.shaderProgram)
 
-		GL.glDetachShader(self.shaderProgram,vertexShader)
-		GL.glDetachShader(self.shaderProgram,fragmentShader)
+		#GL.glDetachShader(self.shaderProgram,vertexShader)
+		#GL.glDetachShader(self.shaderProgram,fragmentShader)
 
 		self.data = np.zeros(num_points, dtype = [("a_position", np.float32, 3),
 												  ("a_color",    np.float32, 4)])
@@ -131,15 +131,13 @@ class buffobj:
 
 	def draw(self):
 
-		'''
-		GL.glEnableVertexAttribArray(self.colorloc)
-		GL.glEnableVertexAttribArray(self.positionloc)
-		GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
-		GL.glVertexAttribPointer(self.colorloc,4,GL.GL_FLOAT, False, self.stride, self.coloffset)
-		GL.glVertexAttribPointer(self.positionloc, 3, GL.GL_FLOAT, False, self.stride, self.posoffset)
-		''' # I have no idea, it seems like 
-
 		self.update()
+
+		GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
+		GL.glEnableVertexAttribArray(self.colorloc)
+		GL.glVertexAttribPointer(self.colorloc,4,GL.GL_FLOAT, False, self.stride, self.coloffset)
+		GL.glEnableVertexAttribArray(self.positionloc)
+		GL.glVertexAttribPointer(self.positionloc, 3, GL.GL_FLOAT, False, self.stride, self.posoffset)
 
 		GL.glUseProgram(self.shaderProgram)
 
