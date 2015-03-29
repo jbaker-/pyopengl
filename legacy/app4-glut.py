@@ -11,11 +11,11 @@ def exitfunc(): #runs when sys.exit() is called
 
 sys.exitfunc = exitfunc
 
-usersetx = 64
-usersety = 64
-usersetz = 64
+usersetx = 32
+usersety = 32
+usersetz = 32
 
-spacer = 5
+spacer = 2
 
 seed = 4
 
@@ -24,8 +24,8 @@ maxextent =  0.5
 
 windowtitle = "GLUT Window"
 
-pointstyle = "single point per voxel"
-#pointstyle = "six points per voxel"
+#pointstyle = "single point per voxel"
+pointstyle = "six points per voxel"
 #pointstyle = "27 points per voxel" 
 #pointstyle = "36 points per voxel"
 #pointstyle = "36 points per voxel + six"
@@ -35,8 +35,8 @@ pointstyle = "single point per voxel"
 #pointstyle = "531441 points per voxel"
 
 global rendertype
-rendertype = "points"
-#rendertype = "lines"
+#rendertype = "points"
+rendertype = "lines"
 #rendertype = "line_strip"
 
 num_points = usersetx * usersety * usersetz
@@ -74,6 +74,9 @@ def display():
 	global rendertype
 
 	GL.glClearColor(0.0,0.0,0.0,1.0)
+	GL.glEnable(GL.GL_DEPTH_TEST)
+	GL.glEnable(GL.GL_BLEND)
+	GL.glBlendFunc(GL.GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 	GL.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	if rendertype == "points":
 		GL.glDrawArrays(GL.GL_POINTS, 0, len(data))
@@ -698,8 +701,8 @@ fragmentShaderProgram = """
 	varying vec4 v_color;
 	varying vec3 v_pos;
 	void main() {
-		gl_FragColor = vec4(clamp((v_color.x-v_pos.x),0.0,1.0),clamp((v_color.y-v_pos.y),0.0,1.0),clamp((v_color.z-v_pos.z),0.0,1.0),v_color.w);
-		//gl_FragColor = v_color;
+		//gl_FragColor = vec4(clamp((v_color.x-v_pos.x),0.0,1.0),clamp((v_color.y-v_pos.y),0.0,1.0),clamp((v_color.z-v_pos.z),0.0,1.0),v_color.w);
+		gl_FragColor = v_color;
 	}"""
 fragmentShader = GL.glCreateShader(GL.GL_FRAGMENT_SHADER)
 GL.glShaderSource(fragmentShader, fragmentShaderProgram)

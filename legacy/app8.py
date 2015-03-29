@@ -14,12 +14,12 @@ sys.exitfunc = exitfunc
 def display():
 	global buffobjs
 	global drawing
+	global moving
 
 	GL.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-	if drawing:
-		for i in buffobjs:
-			i.draw()
+	for i in buffobjs:
+		i.draw()
 
 	glut.glutSwapBuffers()
 	glut.glutPostRedisplay()
@@ -40,8 +40,18 @@ def reshape(width,height):
 	glut.glutPostRedisplay()
 
 def timer(fps):
+	global buffobjs
+	global clock
 
-	#ANY ANIMATION GOES HERE
+	clock += 0.0001
+
+	index = 0.0
+
+	for i in buffobjs:
+		#i.set_translate(i.xtranslate+sin(clock),i.ytranslate+sin(clock),i.ztranslate+sin(clock))
+		i.set_rotate(index*i.xrotate+clock,index*i.yrotate+clock,index*i.zrotate+clock)
+		i.update()
+		index += 0.5
 
 	glut.glutTimerFunc(1000/fps, timer, fps)
 
@@ -65,7 +75,9 @@ glut.glutTimerFunc(1000/60, timer, 60)
 #generate points and declare buffers
 
 global buffobjs
+global clock
 buffobjs = []
+clock = 0.0
 
 p = pointgenerator()
 p.gen_sphere(0.5,4)
@@ -83,7 +95,9 @@ p.gen_cube(15,15,15)
 buffobjs.append(buffobj(p.num_points,p.points,p.colors))
 
 global drawing
+global moving
 drawing = True
+moving = False
 
 
 glut.glutMainLoop()
