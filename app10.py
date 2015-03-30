@@ -10,9 +10,12 @@ allmodels = []
 global camposition
 global camdirection
 global sc
-camposition = [0.0,0.0,-0.5]
+camposition = [0.0,0.0,0.0]
 camdirection = [0.0,0.0,0.0]
 sc = 1.0
+
+global camnear
+camnear = 1.0
 
 def exitfunc(): #runs when sys.exit() is called
  	print "exiting"
@@ -36,33 +39,35 @@ def keyboard(key, x, y):
 	global camposition
 	global camdirection
 	global sc
+	global camnear
 
 	if key == '\033':
 		sys.exit( )
 	elif key == 'e':
-		camposition[2] += 0.0001
+		camposition[2] += 0.01
 	elif key == 'q':
-		camposition[2] -= 0.0001
+		camposition[2] -= 0.01
+		print camposition
 	elif key == 'w':
-		camposition[1] += 0.0001
+		camposition[1] += 0.01
 	elif key == 'x':
-		camposition[1] -= 0.0001
+		camposition[1] -= 0.01
 	elif key == 'd':
-		camposition[0] += 0.0001
+		camposition[0] += 0.01
 	elif key == 'a':
-		camposition[0] -= 0.0001
+		camposition[0] -= 0.01
 	elif key == 'h':
-		camdirection[0] += 0.005
+		camdirection[0] += 0.1
 	elif key == 'k':
-		camdirection[0] -= 0.005
+		camdirection[0] -= 0.1
 	elif key == 'u':
-		camdirection[1] += 0.005
+		camdirection[1] += 0.1
 	elif key == 'n':
-		camdirection[1] -= 0.005
+		camdirection[1] -= 0.1
 	elif key == 'y':
-		camdirection[2] += 0.005
+		camdirection[2] += 0.1
 	elif key == 'i':
-		camdirection[2] -= 0.005
+		camdirection[2] -= 0.1
 	elif key == 'g':
 		camposition = [0,0,0]
 		camdirection = [0,0,0]
@@ -70,17 +75,19 @@ def keyboard(key, x, y):
 		sc += 0.01
 	elif key == 'r':
 		sc -= 0.01
+	elif key == 'c':
+		camnear += 0.0001
+	elif key == 'v':
+		camnear -= 0.0001
 
+
+	#OTHER KEYS TO CONTROL THE PROGRAM
 
 	for i in range(0,len(allmodels)):
 		allmodels[i].campos = camposition
 		allmodels[i].camdir = camdirection
 		allmodels[i].scale = sc
 		allmodels[i].update()
-
-
-
-	#OTHER KEYS TO CONTROL THE PROGRAM
 
 	glut.glutPostRedisplay()
 
@@ -91,9 +98,10 @@ def reshape(width,height):
 	aspect = width/height
 
 	global camposition
+	global camnear
 
 	for i in range(0,len(allmodels)):
-		allmodels[i].set_display_mat_variables(2.0,-2.0,2.0,-2.0,10,0.1)
+		allmodels[i].set_display_mat_variables(2,-2,2,-2,3,camnear)  # top,bottom,right,left,far,near
 		allmodels[i].camposition = camposition;
 
 	glut.glutPostRedisplay()
@@ -130,7 +138,7 @@ p.reset()
 p.gen_legacy_seed_block(4,32,32,32,-0.4,0.4)
 
 allmodels.append(buffobj(p.num_points,p.points,p.colors))
-#allmodels[0].set_display_mat_variables(1.0,-1.0,1.0,-1.0,0.5,0.000001)
+allmodels[0].rendertype = GL.GL_LINES
 print p.num_points
 
 GL.glEnable(GL.GL_DEPTH_TEST)

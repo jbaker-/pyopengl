@@ -126,8 +126,8 @@ class pointgenerator:
 
 		self.num_points = usersetx * usersety * usersetz
 
-		pointstyle = "single point per voxel"
-		#pointstyle = "six points per voxel"
+		#pointstyle = "single point per voxel"
+		pointstyle = "six points per voxel"
 		#pointstyle = "27 points per voxel" 
 		#pointstyle = "36 points per voxel"
 		#pointstyle = "36 points per voxel + six"

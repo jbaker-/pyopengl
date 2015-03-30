@@ -106,61 +106,9 @@ void main()
 
 	mat4 sc = mat4(col1,col2,col3,col4);
 
-    gl_Position = (proje*cr*(r*tr*sc*(vec4(a_position,1.0))))-vec4(u_campos,0.0);
-    v_color = a_color;
-}
-'''
+	vec4 worldspace = tr*sc*r*vec4(a_position,1.0);
 
-
-#if this gets used, itll need to be updated
-standardVertexShaderProgramWithNormals = '''
-attribute vec3 a_position;
-attribute vec4 a_color;
-attribute vec3 a_normal;
-
-uniform float u_xtranslate;
-uniform float u_ytranslate;
-uniform float u_ztranslate;
-uniform float u_xrotate;
-uniform float u_yrotate;
-uniform float u_zrotate;
-
-uniform float u_top;
-uniform float u_bottom;
-uniform float u_near;
-uniform float u_far;
-uniform float u_scale;
-
-varying vec4 v_color;
-
-void main()
-{
-
-	float f = 1/tan(u_fovy/2);
-
-	mat4 proj = ((f/u_aspect),	0.0,	0.0,	0.0,
-				  0.0,			  f,	0.0,	0.0,
-				  0.0,			0.0,	((u_far+u_near)/(u_near-u_far)),	((2*u_near*u_far)/(u_near-u_far)),
-				  0.0,			0.0,   -1.0,	0.0);
-
-
-	mat3 rx = mat3(1,			     0,					  0,
-				   0, 	cos(u_xrotate),	 	-sin(u_xrotate),
-				   0, 	sin(u_xrotate), 	 cos(u_xrotate));
-
-	mat3 ry = mat3(cos(u_yrotate), 0.0,	     sin(u_yrotate),
-				   			  0.0, 1.0,				 	0.0,
-				  -sin(u_yrotate), 0.0,  	 cos(u_yrotate));
-
-	mat3 rz = mat3(cos(u_zrotate),	-sin(u_zrotate),	0.0,
-				   sin(u_zrotate),	 cos(u_zrotate),	0.0,
-				   			  0.0,				0.0,	1.0);
-
-	vec3 tx = vec3(u_xtranslate,0.0,0.0);
-	vec3 ty = vec3(0.0,u_ytranslate,0.0);
-	vec3 tz = vec3(0.0,0.0,u_ztranslate);
-
-    gl_Position = proj*vec4((rx*ry*rz*(a_position+tx+ty+tz)), 1.0);
+    gl_Position = cr*(proje*(tr*sc*r*vec4(a_position,1.0) - vec4(u_campos,0.0)));
     v_color = a_color;
 }
 '''
@@ -175,7 +123,7 @@ void main()
 '''
 
 class buffobj:
-	def __init__(self,num_points,points,colors,normals=None,rendertype=GL.GL_POINTS,vertexShaderProgram=None,fragmentShaderProgram=None):
+	def __init__(self,num_points,points,colors,rendertype=GL.GL_POINTS,vertexShaderProgram=standardVertexShaderProgram,fragmentShaderProgram=standardFragShaderProgram):
 		self.xtranslate = 0.0
 		self.ytranslate = 0.0
 		self.ztranslate = 0.0
@@ -185,14 +133,6 @@ class buffobj:
 		self.scale = 1.0
 
 		self.rendertype = rendertype
-
-		if vertexShaderProgram == None and normals is None:
-			vertexShaderProgram = standardVertexShaderProgram
-		elif vertexShaderProgram == None and normals is not None:
-			vertexShaderProgram = standardVertexShaderProgramWithNormals
-
-		if fragmentShaderProgram == None:
-			fragmentShaderProgram = standardFragShaderProgram
 
 		#DECLARE GPU BUFFER
 
@@ -214,19 +154,8 @@ class buffobj:
 		GL.glValidateProgram(self.shaderProgram)
 		GL.glUseProgram(self.shaderProgram)
 
-		#GL.glDetachShader(self.shaderProgram,vertexShader)
-		#GL.glDetachShader(self.shaderProgram,fragmentShader)
-
-		self.hasnormals = False
-
-		if normals is None:
-			self.data = np.zeros(num_points, dtype = [("a_position", np.float32, 3),("a_color",    np.float32, 4)])
-		else:
-			self.data = np.zeros(num_points, dtype = [("a_position", np.float32, 3),("a_color",    np.float32, 4),("a_normal",   np.float32, 3)])
-			self.data['a_normal'] = normals
-			self.hasnormals = True
-
-
+		self.data = np.zeros(num_points, dtype = [("a_position", np.float32, 3),("a_color",    np.float32, 4)])
+		
 		self.data['a_color'] = colors
 		self.data['a_position'] = points
 
@@ -244,12 +173,6 @@ class buffobj:
 		self.colorloc = GL.glGetAttribLocation(self.shaderProgram,"a_color")
 		GL.glEnableVertexAttribArray(self.colorloc)
 		GL.glVertexAttribPointer(self.colorloc,4,GL.GL_FLOAT, False, self.stride, self.coloffset)
-
-		if self.hasnormals:
-			self.normoffset = ctypes.c_void_p(self.data.dtype["a_position"].itemsize+self.data.dtype["a_color"].itemsize)
-			self.normloc = GL.glGetAttribLocation(self.shaderProgram,"a_normal")
-			GL.glEnableVertexAttribArray(self.normloc)
-			GL.glVertexAttribPointer(self.normloc,3,GL.GL_FLOAT, False, self.stride, self.normoffset)
 
 		#UNIFORM VARIABLES
 
@@ -294,10 +217,7 @@ class buffobj:
 		GL.glVertexAttribPointer(self.colorloc,4,GL.GL_FLOAT, False, self.stride, self.coloffset)
 		GL.glEnableVertexAttribArray(self.positionloc)
 		GL.glVertexAttribPointer(self.positionloc, 3, GL.GL_FLOAT, False, self.stride, self.posoffset)
-		if self.hasnormals:
-			GL.glEnableVertexAttribArray(self.normloc)
-			GL.glVertexAttribPointer(self.normloc,3,GL.GL_FLOAT, False, self.stride, self.normoffset)
-
+		
 		GL.glUseProgram(self.shaderProgram)
 
 		if self.rendertype is not None:
@@ -323,7 +243,7 @@ class buffobj:
 		GL.glUniform3f(self.camposloc,self.campos[0],self.campos[1],self.campos[2])
 		GL.glUniform3f(self.camdirloc,self.camdir[0],self.camdir[1],self.camdir[2])
 
-	def kill(self):
+	def kill(self): #I dont know, its not really neccesary
 		GL.glDisableVertexAttribArray(self.colorloc)
 		GL.glDisableVertexAttribArray(self.positionloc)
 		GL.glDisableVertexAttribArray(self.normloc)
@@ -332,6 +252,9 @@ class buffobj:
 		GL.glDeleteShader(self.vertexShader)
 		GL.glDeleteBuffers(1,[self.gpubuffer])
 		GL.glDeleteVertexArrays(1,[self.gpubuffer])
+
+		#GL.glDetachShader(self.shaderProgram,vertexShader)
+		#GL.glDetachShader(self.shaderProgram,fragmentShader)
 	
 	def set_display_mat_variables(self,top,bottom,right,left,far,near):
 		self.top = top
