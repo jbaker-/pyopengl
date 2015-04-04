@@ -108,7 +108,7 @@ void main()
 
 	vec4 worldspace = tr*sc*r*vec4(a_position,1.0);
 
-    gl_Position = cr*(proje*(tr*sc*r*vec4(a_position,1.0) - vec4(u_campos,0.0)));
+    gl_Position = tr*r*sc*vec4(a_position,1.0);  //proje*worldspace; //cr*(proje*(tr*sc*r*vec4(a_position,1.0) - vec4(u_campos,0.0)));
     v_color = a_color;
 }
 '''
@@ -210,6 +210,9 @@ class buffobj:
 
 	def draw(self):
 
+
+		GL.glUseProgram(self.shaderProgram)
+
 		self.update()
 
 		GL.glBindBuffer(GL.GL_ARRAY_BUFFER,self.gpubuffer)
@@ -217,8 +220,6 @@ class buffobj:
 		GL.glVertexAttribPointer(self.colorloc,4,GL.GL_FLOAT, False, self.stride, self.coloffset)
 		GL.glEnableVertexAttribArray(self.positionloc)
 		GL.glVertexAttribPointer(self.positionloc, 3, GL.GL_FLOAT, False, self.stride, self.posoffset)
-		
-		GL.glUseProgram(self.shaderProgram)
 
 		if self.rendertype is not None:
 			GL.glDrawArrays(self.rendertype, 0, len(self.data))
@@ -277,5 +278,9 @@ class buffobj:
 		self.xrotate = x
 		self.yrotate = y
 		self.zrotate = z
+		self.update()
+
+	def set_scale(self,newscale):
+		self.scale = newscale
 		self.update()
 

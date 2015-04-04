@@ -41,53 +41,80 @@ def keyboard(key, x, y):
 	global sc
 	global camnear
 
-	if key == '\033':
+
+
+	if key == '\033': #the escape key
 		sys.exit( )
-	elif key == 'e':
-		camposition[2] += 0.01
-	elif key == 'q':
-		camposition[2] -= 0.01
-		print camposition
-	elif key == 'w':
-		camposition[1] += 0.01
-	elif key == 'x':
-		camposition[1] -= 0.01
-	elif key == 'd':
-		camposition[0] += 0.01
-	elif key == 'a':
-		camposition[0] -= 0.01
-	elif key == 'h':
-		camdirection[0] += 0.1
-	elif key == 'k':
-		camdirection[0] -= 0.1
-	elif key == 'u':
-		camdirection[1] += 0.1
-	elif key == 'n':
-		camdirection[1] -= 0.1
-	elif key == 'y':
-		camdirection[2] += 0.1
-	elif key == 'i':
-		camdirection[2] -= 0.1
-	elif key == 'g':
-		camposition = [0,0,0]
-		camdirection = [0,0,0]
-	elif key == 't':
-		sc += 0.01
-	elif key == 'r':
-		sc -= 0.01
-	elif key == 'c':
-		camnear += 0.0001
-	elif key == 'v':
-		camnear -= 0.0001
+	elif key == 'a' or key == 'A':
+		pass
+	elif key == 'b' or key == 'B':
+		pass
+	elif key == 'c' or key == 'C':
+		pass
+	elif key == 'd' or key == 'D':
+		pass
+	elif key == 'e' or key == 'E':
+		sc += 0.1
+		allmodels[0].set_scale(sc)
+		print allmodels[0].scale
+	elif key == 'f' or key == 'F':
+		pass
+	elif key == 'g' or key == 'G':
+		pass
+	elif key == 'h' or key == 'H':
+		pass
+	elif key == 'i' or key == 'I':
+		pass
+	elif key == 'j' or key == 'J':
+		pass
+	elif key == 'k' or key == 'K':
+		pass
+	elif key == 'l' or key == 'L':
+		pass
+	elif key == 'm' or key == 'M':
+		pass
+	elif key == 'n' or key == 'N':
+		pass
+	elif key == 'o' or key == 'O':
+		pass
+	elif key == 'p' or key == 'P':
+		pass
+	elif key == 'q' or key == 'Q':
+		sc -= 0.1
+		allmodels[0].set_scale(sc)
+		print allmodels[0].scale
+	elif key == 'r' or key == 'R':
+		pass
+	elif key == 's' or key == 'S':
+		pass
+	elif key == 't' or key == 'T':
+		pass
+	elif key == 'u' or key == 'U':
+		pass
+	elif key == 'v' or key == 'V':
+		pass
+	elif key == 'w' or key == 'W':
+		pass
+	elif key == 'x' or key == 'X':
+		pass
+	elif key == 'y' or key == 'Y':
+		pass
+	elif key == 'z' or key == 'Z':
+		pass
+	else:
+		print("invalid go home")
+
 
 
 	#OTHER KEYS TO CONTROL THE PROGRAM
 
+	'''
 	for i in range(0,len(allmodels)):
 		allmodels[i].campos = camposition
 		allmodels[i].camdir = camdirection
 		allmodels[i].scale = sc
 		allmodels[i].update()
+	'''
 
 	glut.glutPostRedisplay()
 

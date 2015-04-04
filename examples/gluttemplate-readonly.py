@@ -41,8 +41,62 @@ def display():
 
 def keyboard(key, x, y):
 
-	if key == '\033':
+	if key == '\033': #the escape key
 		sys.exit( )
+	elif key == 'a' or key == 'A':
+		pass
+	elif key == 'b' or key == 'B':
+		pass
+	elif key == 'c' or key == 'C':
+		pass
+	elif key == 'd' or key == 'D':
+		pass
+	elif key == 'e' or key == 'E':
+		pass
+	elif key == 'f' or key == 'F':
+		pass
+	elif key == 'g' or key == 'G':
+		pass
+	elif key == 'h' or key == 'H':
+		pass
+	elif key == 'i' or key == 'I':
+		pass
+	elif key == 'j' or key == 'J':
+		pass
+	elif key == 'k' or key == 'K':
+		pass
+	elif key == 'l' or key == 'L':
+		pass
+	elif key == 'm' or key == 'M':
+		pass
+	elif key == 'n' or key == 'N':
+		pass
+	elif key == 'o' or key == 'O':
+		pass
+	elif key == 'p' or key == 'P':
+		pass
+	elif key == 'q' or key == 'Q':
+		pass
+	elif key == 'r' or key == 'R':
+		pass
+	elif key == 's' or key == 'S':
+		pass
+	elif key == 't' or key == 'T':
+		pass
+	elif key == 'u' or key == 'U':
+		pass
+	elif key == 'v' or key == 'V':
+		pass
+	elif key == 'w' or key == 'W':
+		pass
+	elif key == 'x' or key == 'X':
+		pass
+	elif key == 'y' or key == 'Y':
+		pass
+	elif key == 'z' or key == 'Z':
+		pass
+	else:
+		print("invalid go home")
 
 	#OTHER KEYS TO CONTROL THE PROGRAM
 
@@ -61,9 +115,34 @@ def timer(fps):
 	glut.glutTimerFunc(1000/fps, timer, fps)
 '''
 
-def idle():
-	pass
+global outputfpsprofiling
+outputfpsprofiling = False
 
+global framecount
+framecount = 0
+
+global tprev
+global tcurr
+
+tprev = time.time()
+tcurr = time.time()
+
+def idle():
+
+	global framecount
+	global tcurr
+	global tprev
+
+	framecount += 1
+
+	tprev = tcurr
+	tcurr = time.time()
+	
+	if outputfpsprofiling:
+		tframe = tcurr - tprev
+		print(str(framecount) + "  which took " + str(tframe) + " seconds -- avg fps: " + str(1/tframe))
+
+	glut.glutPostRedisplay()
 
 glut.glutInit()
 glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA | glut.GLUT_DEPTH | glut.GLUT_MULTISAMPLE)
