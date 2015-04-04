@@ -5,6 +5,9 @@ windowtitle = "GLUT Display"
 windowxdim = 800
 windowydim = 800
 
+global index
+index = 0
+
 global scale
 global xrotate
 global yrotate
@@ -93,6 +96,8 @@ def display():
 
 def keyboard(key, x, y):
 
+	global index
+
 	global scale
 	global xrotate
 	global yrotate
@@ -122,13 +127,13 @@ def keyboard(key, x, y):
 	elif key == 'h' or key == 'H':
 		scale -= 0.01
 	elif key == 'i' or key == 'I':
-		yrotate += 0.01
-	elif key == 'j' or key == 'J':
-		xrotate -= 0.01
-	elif key == 'k' or key == 'K':
-		yrotate -= 0.01
-	elif key == 'l' or key == 'L':
 		xrotate += 0.01
+	elif key == 'j' or key == 'J':
+		yrotate += 0.01
+	elif key == 'k' or key == 'K':
+		xrotate -= 0.01
+	elif key == 'l' or key == 'L':
+		yrotate -= 0.01
 	elif key == 'm' or key == 'M':
 		pass
 	elif key == 'n' or key == 'N':
@@ -152,18 +157,20 @@ def keyboard(key, x, y):
 	elif key == 'w' or key == 'W':
 		ytranslate += 0.01
 	elif key == 'x' or key == 'X':
-		pass
+		index += 1
+		index = clamp(index,0,len(allmodels)-1)
 	elif key == 'y' or key == 'Y':
 		scale += 0.01
 	elif key == 'z' or key == 'Z':
-		pass
+		index -= 1
+		index = clamp(index,0,len(allmodels)-1)
 	else:
 		print("invalid go home")
 
-	allmodels[0].set_translate(xtranslate,ytranslate,ztranslate)
-	allmodels[0].set_rotate(xrotate,yrotate,zrotate)
-	allmodels[0].set_scale(scale)
-	allmodels[0].update()
+	allmodels[index].set_translate(xtranslate,ytranslate,ztranslate)
+	allmodels[index].set_rotate(xrotate,yrotate,zrotate)
+	allmodels[index].set_scale(scale)
+	allmodels[index].update()
 
 	GL.glLineWidth(pointsize)
 	GL.glPointSize(pointsize)
@@ -203,7 +210,7 @@ glut.glutReshapeFunc(reshape)
 glut.glutDisplayFunc(display)
 glut.glutKeyboardFunc(keyboard)
 glut.glutIdleFunc(idle)
-glut.glutTimerFunc(1000/120, timer, 120)
+glut.glutTimerFunc(1000/60, timer, 60)
 #glut.glutFullScreen() #does work -- 3/23
 
 GL.glEnable(GL.GL_DEPTH_TEST)
@@ -217,12 +224,18 @@ GL.glClearColor(0.0,0.0,0.0,1.0)
 #--------------------------------------------------------------------------------------
 
 p = pointgenerator()
-p.gen_cube(15,20,100)
+p.gen_cube(10,10,10)
 
 print("rendering "+str(p.num_points)+" points")
 
 allmodels.append(buffobj(p.num_points,p.points,p.colors))
 allmodels[0].rendertype = GL.GL_POINTS
+
+allmodels.append(buffobj(p.num_points,p.points,p.colors))
+allmodels[1].rendertype = GL.GL_POINTS
+
+allmodels.append(buffobj(p.num_points,p.points,p.colors))
+allmodels[2].rendertype = GL.GL_POINTS
 
 
 glut.glutMainLoop()
