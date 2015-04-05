@@ -106,9 +106,9 @@ void main()
 
 	mat4 sc = mat4(col1,col2,col3,col4);
 
-	vec4 worldspace = tr*sc*r*vec4(a_position,1.0);
+	mat4 mv = tr*sc*r;
 
-    gl_Position = tr*r*sc*vec4(a_position,1.0);  //proje*worldspace; //cr*(proje*(tr*sc*r*vec4(a_position,1.0) - vec4(u_campos,0.0)));
+    gl_Position = mv*vec4(a_position,1.0);  //cr*(proje*(tr*sc*r*vec4(a_position,1.0) - vec4(u_campos,0.0)));
     v_color = a_color;
 }
 '''

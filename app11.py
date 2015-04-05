@@ -220,22 +220,19 @@ glEnable(GL.GL_POINT_SMOOTH)
 GL.glClearColor(0.0,0.0,0.0,1.0)
 
 #--------------------------------------------------------------------------------------
-#Generation of points and declaration of buffer
+#Generation of points and declaration of buffer(s)
 #--------------------------------------------------------------------------------------
 
 p = pointgenerator()
-p.gen_cube(10,10,10)
+p.gen_cube(6,6,6)
 
-print("rendering "+str(p.num_points)+" points")
+num_buffers = 10
 
-allmodels.append(buffobj(p.num_points,p.points,p.colors))
-allmodels[0].rendertype = GL.GL_POINTS
+print("rendering "+str(num_buffers*p.num_points)+" points in "+str(num_buffers)+" buffers")
 
-allmodels.append(buffobj(p.num_points,p.points,p.colors))
-allmodels[1].rendertype = GL.GL_POINTS
+for i in range(0,num_buffers):
+	allmodels.append(buffobj(p.num_points,p.points,p.colors))
+	allmodels[len(allmodels)-1].rendertype = GL.GL_POINTS
 
-allmodels.append(buffobj(p.num_points,p.points,p.colors))
-allmodels[2].rendertype = GL.GL_POINTS
-
-
+#--------------------------------------------------------------------------------------
 glut.glutMainLoop()
